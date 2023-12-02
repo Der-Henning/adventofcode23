@@ -1,6 +1,6 @@
 use crate::utils::input;
 
-fn inputs() -> Vec<String> {
+fn rows() -> Vec<String> {
     input(&1).split("\n").map(|line| line.to_string()).collect()
 }
 
@@ -11,7 +11,7 @@ fn get_number(s: &String) -> i32 {
 
 pub fn task1() {
     let mut result: i32 = 0;
-    for row in inputs().iter() {
+    for row in rows().iter() {
         result += get_number(row);
     }
     println!("Result 1: {:?}", result);
@@ -20,7 +20,7 @@ pub fn task1() {
 pub fn task2() {
     let mut result: i32 = 0;
     let numbers: [&str; 10] = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-    for row in inputs().iter() {
+    for row in rows().iter() {
         let mut x: String = row.to_string();
         for (i, number) in numbers.iter().enumerate() {
             x = x.replace(number, format!("{}{}{}", number, i, number).as_str());
