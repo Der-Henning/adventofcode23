@@ -1,60 +1,66 @@
+use std::collections::HashMap;
+
 use crate::utils::input;
 
+fn games() -> Vec<(i32, Vec<(i32, String)>)> {
+    input(&2)
+        .split("\n")
+        .map(|game: &str| {
+            let arr: Vec<&str> = game.split(":").collect();
+            let game_num: i32 = arr[0].replace(char::is_alphabetic, "").trim().parse().unwrap();
+            let draws = arr[1]
+                .split(";")
+                .flat_map(|draw: &str| {
+                    draw.split(",")
+                        .map(|col: &str| {
+                            let arr: Vec<&str> = col.trim().split(" ").collect();
+                            let count: i32 = arr[0].parse().unwrap();
+                            let color: String = arr[1].to_string();
+                            (count, color)
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>();
+            (game_num, draws)
+        })
+        .collect::<Vec<_>>()
+}
+
 pub fn task1() {
-    let input: String = input(&2);
-    let games: Vec<&str> = input.split("\n").collect::<Vec<&str>>();
-    let red: i32 = 12;
-    let blue: i32 = 14;
-    let green: i32 = 13;
+    let color_size: HashMap<&str, i32> = HashMap::from([
+        ("red", 12),
+        ("blue", 14),
+        ("green", 13),
+    ]);
     let mut result: i32 = 0;
-    for (i, game) in games.iter().enumerate() {
-        let draws: Vec<&str> = game.split(":").collect::<Vec<&str>>()[1].split(";").collect::<Vec<&str>>();
+    for (game_num, game) in games().iter() {
         let mut possible: bool = true;
-        for draw in draws.iter() {
-            for col in draw.split(",").collect::<Vec<&str>>().iter() {
-                let x = col.replace(char::is_alphabetic, "").trim().to_string().parse::<i32>().unwrap();
-                if col.contains("red") && x > red {
-                    possible = false;
-                }
-                if col.contains("blue") && x > blue {
-                    possible = false;
-                }
-                if col.contains("green") && x > green {
-                    possible = false;
-                }
+        for (count, color) in game {
+            if count > &color_size[color.as_str()] {
+                possible = false;
             }
         }
         if possible {
-            result += i as i32 + 1;
+            result += game_num;
         }
     }
     println!("Result 1: {:?}", result);
 }
 
 pub fn task2() {
-    let input: String = input(&2);
-    let games: Vec<&str> = input.split("\n").collect::<Vec<&str>>();
     let mut result: i32 = 0;
-    for game in games.iter() {
-        let mut reds = 0;
-        let mut blues = 0;
-        let mut greens = 0;
-        let draws: Vec<&str> = game.split(":").collect::<Vec<&str>>()[1].split(";").collect::<Vec<&str>>();
-        for draw in draws.iter() {
-            for col in draw.split(",").collect::<Vec<&str>>().iter() {
-                let x = col.replace(char::is_alphabetic, "").trim().to_string().parse::<i32>().unwrap();
-                if col.contains("red") && x > reds {
-                    reds = x;
-                }
-                if col.contains("blue") && x > blues {
-                    blues = x;
-                }
-                if col.contains("green") && x > greens {
-                    greens = x;
-                }
+    for (_, game) in games().iter() {
+        let mut num_colors: HashMap<&str, i32> = HashMap::from([
+            ("red", 0),
+            ("blue", 0),
+            ("green", 0),
+        ]);
+        for (count, color) in game {
+            if count > &num_colors[color.as_str()] {
+                num_colors.insert(color, *count);
             }
         }
-        result += reds * blues * greens;
+        result += num_colors.values().product::<i32>();
     }
     println!("Result 2: {:?}", result);
 }
