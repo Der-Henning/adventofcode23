@@ -30,23 +30,21 @@ fn parse_input() -> (Vec<Number>, Vec<Symbol>) {
             }
             if !c.is_numeric() || char_index == row.len()-1 {
                 if current_num_string.len() > 0 {
-                    let current_num: i32 = current_num_string.parse().unwrap();
-                    let end_index: i32 = if char_index == row.len()-1 { char_index as i32 } else { char_index as i32 - 1 };
                     number_arr.push(Number {
-                        value: current_num,
+                        value: current_num_string.parse().unwrap(),
                         row_index: row_index as i32,
                         start_index: current_start_index,
-                        end_index: end_index
+                        end_index: if char_index == row.len()-1 { char_index as i32 } else { char_index as i32 - 1 }
                     });
                     current_num_string = String::new();
                 }
-                if !c.is_numeric() && c != '.' {
-                    symbol_arr.push(Symbol {
-                        value: c,
-                        row_index: row_index as i32,
-                        index: char_index as i32
-                    });
-                }
+            }
+            if !c.is_numeric() && c != '.' {
+                symbol_arr.push(Symbol {
+                    value: c,
+                    row_index: row_index as i32,
+                    index: char_index as i32
+                });
             }
         }
     }
@@ -54,39 +52,31 @@ fn parse_input() -> (Vec<Number>, Vec<Symbol>) {
 }
 
 
+fn is_adjacent(number: &Number, symbol: &Symbol) -> bool {
+    (number.row_index-1..number.row_index+2).contains(&symbol.row_index) &&
+    (number.start_index-1..number.end_index+2).contains(&symbol.index)
+}
+
+
 pub fn task1() {
     let (numbers, symbols) = parse_input();
-    let mut final_numbers: Vec<Number> = Vec::new();
-    'outer: for number in numbers {
-        for symbol in &symbols {
-            if (number.row_index-1..number.row_index+2).contains(&symbol.row_index) &&
-               (number.start_index-1..number.end_index+2).contains(&symbol.index) {
-                final_numbers.push(number.clone());
-                continue 'outer;
-            }
-        }
-    }
-    let result: i32 = final_numbers.iter().map(|number: &Number| number.value).sum();
+    let result: i32 = numbers.iter().filter(|number: &&Number| {
+        symbols.iter().any(|symbol: &Symbol| is_adjacent(number, symbol))
+    }).map(|number: &Number| number.value).sum::<i32>();
     println!("Result 1: {:?}", result);
 }
 
 
 pub fn task2() {
     let (numbers, symbols) = parse_input();
-    let mut result = 0;
-    for symbol in symbols {
-        if symbol.value == '*' {
-            let mut adjecent_numbers: Vec<Number> = Vec::new();
-            for number in &numbers {
-                if (number.row_index-1..number.row_index+2).contains(&symbol.row_index) &&
-                   (number.start_index-1..number.end_index+2).contains(&symbol.index) {
-                    adjecent_numbers.push(number.clone());
-                }
-            }
-            if adjecent_numbers.len() == 2 {
-                result += adjecent_numbers.iter().map(|number: &Number| number.value).product::<i32>();
-            }
-        }
-    }
+    let result: i32 = symbols.iter()
+        .filter(|symbol: &&Symbol| symbol.value == '*')
+        .map(|symbol: &Symbol| {
+            numbers.iter()
+            .filter(|number: &&Number| is_adjacent(number, symbol))
+        })
+        .filter(|adjacent_numbers | adjacent_numbers.clone().count() as i32 == 2)
+        .map(|adjacent_numbers | adjacent_numbers.map(|number: &Number| number.value).product::<i32>())
+        .sum::<i32>();
     println!("Result 2: {:?}", result)
 }
