@@ -58,25 +58,21 @@ fn is_adjacent(number: &Number, symbol: &Symbol) -> bool {
 }
 
 
-pub fn task1() {
+pub fn task1() -> i32 {
     let (numbers, symbols) = parse_input();
-    let result: i32 = numbers.iter().filter(|number: &&Number| {
-        symbols.iter().any(|symbol: &Symbol| is_adjacent(number, symbol))
-    }).map(|number: &Number| number.value).sum::<i32>();
-    println!("Result 1: {:?}", result);
+    numbers.iter()
+        .filter(|number: &&Number| symbols.iter().any(|symbol: &Symbol| is_adjacent(number, symbol)))
+        .map(|number: &Number| number.value)
+        .sum::<i32>()
 }
 
 
-pub fn task2() {
+pub fn task2() -> i32 {
     let (numbers, symbols) = parse_input();
-    let result: i32 = symbols.iter()
+    symbols.iter()
         .filter(|symbol: &&Symbol| symbol.value == '*')
-        .map(|symbol: &Symbol| {
-            numbers.iter()
-            .filter(|number: &&Number| is_adjacent(number, symbol))
-        })
+        .map(|symbol: &Symbol| numbers.iter().filter(|number: &&Number| is_adjacent(number, symbol)))
         .filter(|adjacent_numbers | adjacent_numbers.clone().count() as i32 == 2)
         .map(|adjacent_numbers | adjacent_numbers.map(|number: &Number| number.value).product::<i32>())
-        .sum::<i32>();
-    println!("Result 2: {:?}", result)
+        .sum::<i32>()
 }

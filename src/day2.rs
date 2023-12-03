@@ -26,28 +26,21 @@ fn games() -> Vec<(i32, Vec<(i32, String)>)> {
         .collect::<Vec<_>>()
 }
 
-pub fn task1() {
+pub fn task1() -> i32 {
     let color_size: HashMap<&str, i32> = HashMap::from([
         ("red", 12),
         ("blue", 14),
         ("green", 13),
     ]);
-    let mut result: i32 = 0;
-    for (game_num, game) in games().iter() {
-        let mut possible: bool = true;
-        for (count, color) in game {
-            if count > &color_size[color.as_str()] {
-                possible = false;
-            }
-        }
-        if possible {
-            result += game_num;
-        }
-    }
-    println!("Result 1: {:?}", result);
+    games().iter()
+        .filter(|(_, game)| 
+            game.iter()
+            .all(|(count, color)| count <= &color_size[color.as_str()]))
+        .map(|(game_num, _)| game_num)
+        .sum::<i32>()
 }
 
-pub fn task2() {
+pub fn task2() -> i32 {
     let mut result: i32 = 0;
     for (_, game) in games().iter() {
         let mut num_colors: HashMap<&str, i32> = HashMap::from([
@@ -62,5 +55,5 @@ pub fn task2() {
         }
         result += num_colors.values().product::<i32>();
     }
-    println!("Result 2: {:?}", result);
+    result
 }
