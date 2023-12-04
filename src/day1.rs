@@ -1,4 +1,4 @@
-use crate::utils::input;
+use super::utils::input;
 
 fn rows() -> Vec<String> {
     input(&1).split("\n").map(|line: &str| line.to_string()).collect()

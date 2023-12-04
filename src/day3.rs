@@ -1,4 +1,4 @@
-use crate::utils::input;
+use super::utils::input;
 
 #[derive(Clone)]
 struct Number {
