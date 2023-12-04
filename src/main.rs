@@ -4,8 +4,8 @@ mod day2;
 mod day3;
 mod day4;
 
-fn print_results(day: i32, task1: i32, task2: i32) {
-    println!("Day {}:\nResult 1: {}\nResult 2: {}", day, task1, task2);
+fn print_results<T: std::fmt::Debug>(day: i32, task1: T, task2: T) {
+    println!("Day {:?}:\nResult 1: {:?}\nResult 2: {:?}", day, task1, task2);
     println!("------------------");
 }
 
