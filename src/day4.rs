@@ -14,18 +14,16 @@ fn parse_input() -> Vec<(i32, Vec<i32>, Vec<i32>)> {
     .collect::<Vec<(i32, Vec<i32>, Vec<i32>)>>()
 }
 
-fn get_matches(win_nums: &Vec<i32>, have_nums: &Vec<i32>) -> i32 {
-    HashSet::<i32>::from_iter(win_nums.clone())
-        .intersection(&HashSet::<i32>::from_iter(have_nums.clone()))
-        .map(|i: &i32| *i)
-        .collect::<Vec<i32>>()
-        .len() as i32
+fn get_matches(win_nums: Vec<i32>, have_nums: Vec<i32>) -> i32 {
+    HashSet::<i32>::from_iter(win_nums)
+        .intersection(&HashSet::<i32>::from_iter(have_nums))
+        .count() as i32
 }
 
 
 pub fn task1() -> i32 {
     parse_input().iter().map(|(_, win_nums, have_nums)| {
-        let matches: u32 = get_matches(win_nums, have_nums) as u32;
+        let matches: u32 = get_matches(win_nums.clone(), have_nums.clone()) as u32;
         if matches == 0 {0} else {2_i32.pow(matches-1)}
     }).sum::<i32>()
 }
@@ -36,7 +34,7 @@ fn get_recursive_matches(cards: &Vec<(i32, Vec<i32>, Vec<i32>)>, card_num: i32, 
         return *matches;
     }
     let card: &(i32, Vec<i32>, Vec<i32>) = cards.iter().find(|(num, _, _)| num == &card_num).unwrap();
-    let mut matches: i32 = get_matches(&card.1, &card.2);
+    let mut matches: i32 = get_matches(card.1.clone(), card.2.clone());
     if matches > 0 {
         matches += (card_num + 1..card_num + matches + 1)
             .map(|i: i32| get_recursive_matches(cards, i, memo))
