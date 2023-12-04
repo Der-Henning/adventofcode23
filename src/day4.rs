@@ -27,24 +27,23 @@ pub fn task1() -> i32 {
     parse_input().iter().map(|(_, win_nums, have_nums)| {
         let matches: u32 = get_matches(win_nums, have_nums) as u32;
         if matches == 0 {0} else {2_i32.pow(matches-1)}
-    }).sum()
+    }).sum::<i32>()
 }
 
 
 fn get_recursive_matches(cards: &Vec<(i32, Vec<i32>, Vec<i32>)>, card_num: i32, memo: &mut HashMap<i32, i32>) -> i32 {
-    if let Some(result) = memo.get(&card_num) {
-        return *result;
+    if let Some(matches) = memo.get(&card_num) {
+        return *matches;
     }
-    let game: &(i32, Vec<i32>, Vec<i32>) = cards.iter().find(|(num, _, _)| num == &card_num).unwrap();
-    let matches: i32 = get_matches(&game.1, &game.2);
-    let mut result: i32 = matches;
+    let card: &(i32, Vec<i32>, Vec<i32>) = cards.iter().find(|(num, _, _)| num == &card_num).unwrap();
+    let mut matches: i32 = get_matches(&card.1, &card.2);
     if matches > 0 {
-        result += (card_num + 1..card_num + matches + 1)
+        matches += (card_num + 1..card_num + matches + 1)
             .map(|i: i32| get_recursive_matches(cards, i, memo))
             .sum::<i32>();
     }
-    memo.insert(card_num, result);
-    result
+    memo.insert(card_num, matches);
+    matches
 }
 
 
@@ -53,6 +52,6 @@ pub fn task2() ->i32 {
     
     let mut memo: HashMap<i32, i32> = HashMap::new();
     cards.iter()
-        .map(|(num, _, _)| get_recursive_matches(&cards, *num, &mut memo))
+        .map(|(card_num, _, _)| get_recursive_matches(&cards, *card_num, &mut memo))
         .sum::<i32>() + cards.len() as i32
 }
