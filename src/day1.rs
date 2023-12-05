@@ -16,7 +16,7 @@ pub fn task1() -> i32 {
 pub fn task2() -> i32 {
     let numbers: [&str; 10] = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
     rows().iter().map(|row: &String| {
-        let mut x: String = row.to_string();
+        let mut x: String = row.clone();
         for (i, number) in numbers.iter().enumerate() {
             x = x.replace(number, format!("{}{}{}", number, i, number).as_str());
         }

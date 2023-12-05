@@ -25,8 +25,7 @@ fn parse_input() -> Vec<Card> {
         let win_nums: Vec<i32> = split_nums(&b[0]);
         let have_nums: Vec<i32> = split_nums(&b[1]);
         Card {card_num, win_nums, have_nums}
-    })
-    .collect::<Vec<Card>>()
+    }).collect::<Vec<Card>>()
 }
 
 
