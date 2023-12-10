@@ -8,6 +8,7 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
+mod day10;
 
 fn print_results<T: std::fmt::Debug>(day: i32, task1: T, task2: T) {
     println!("Day {:?}:\nResult 1: {:?}\nResult 2: {:?}", day, task1, task2);
@@ -24,6 +25,7 @@ fn main() {
     print_results(7, day7::task1(), day7::task2());
     print_results(8, day8::task1(), day8::task2());
     print_results(9, day9::task1(), day9::task2());
+    print_results(10, day10::task1(), day10::task2());
 }
 
 
@@ -83,5 +85,11 @@ mod tests {
     fn day9() {
         assert_eq!(day9::task1(), 2105961943);
         assert_eq!(day9::task2(), 1019);
+    }
+
+    #[test]
+    fn day10() {
+        assert_eq!(day10::task1(), 6806);
+        assert_eq!(day10::task2(), 449);
     }
 }
