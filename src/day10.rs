@@ -90,7 +90,7 @@ pub fn task2() -> usize {
     let tiles: Vec<&(usize, usize, char)> = map.iter()
         .filter(|(x, y, _)| clean_map[*x][*y] == '.')
         .collect::<Vec<&(usize, usize, char)>>();
-    clean_map.iter().for_each(|line: &Vec<char>| println!("{:?}", line.iter().collect::<String>()));
+    // clean_map.iter().for_each(|line: &Vec<char>| println!("{:?}", line.iter().collect::<String>()));
     tiles.iter().map(|(x, y, _)| {
         if clean_map[*x][0..*y].iter().any(|c: &char| c != &'.') &&
             clean_map[0..*x].iter().map(|line: &Vec<char>| line[*y]).any(|c: char| c != '.') &&
